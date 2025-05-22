@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七彩灯光模拟器</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .title {
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .lamp-container {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .lamp {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: currentColor;
+            transition: all 0.5s ease;
+            opacity: 0.8;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        button {
+            padding: 12px 30px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #6e8efb, #a777e3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        .stop-btn {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+        }
+    </style>
+</head>
+<body>
+    <h1 class="title">七彩灯光模拟器</h1>
+    
+    <div class="lamp-container">
+        <div class="lamp" id="lamp1"></div>
+        <div class="lamp" id="lamp2"></div>
+        <div class="lamp" id="lamp3"></div>
+        <div class="lamp" id="lamp4"></div>
+        <div class="lamp" id="lamp5"></div>
+        <div class="lamp" id="lamp6"></div>
+        <div class="lamp" id="lamp7"></div>
+    </div>
+    
+    <div class="controls">
+        <button id="startBtn">启动</button>
+        <button id="stopBtn" class="stop-btn">停止</button>
+    </div>
+
+    <script>
+        const colors = [
+            '#FF5252', // 红
+            '#FF9800', // 橙
+            '#FFEB3B', // 黄
+            '#4CAF50', // 绿
+            '#2196F3', // 蓝
+            '#673AB7', // 靛
+            '#E91E63'  // 紫
+        ];
+        
+        let animationInterval;
+        let isAnimating = false;
+        
+        function getRandomColor(currentColors) {
+            let availableColors = colors.filter(color => !currentColors.includes(color));
+            return availableColors[Math.floor(Math.random() * availableColors.length)];
+        }
+        
+        function updateLamps() {
+            let currentColors = [];
+            const lamps = document.querySelectorAll('.lamp');
+            
+            // 为每个灯分配一个独特的颜色
+            lamps.forEach(lamp => {
+                let color = getRandomColor(currentColors);
+                currentColors.push(color);
+                lamp.style.color = color;
+            });
+            
+            // 闪烁效果
+            lamps.forEach((lamp, index) => {
+                setTimeout(() => {
+                    lamp.style.opacity = '0.4';
+                    setTimeout(() => {
+                        lamp.style.opacity = '0.8';
+                    }, 300);
+                }, index * 100);
+            });
+        }
+        
+        function startAnimation() {
+            if (!isAnimating) {
+                isAnimating = true;
+                updateLamps();
+                animationInterval = setInterval(updateLamps, 1000);
+            }
+        }
+        
+        function stopAnimation() {
+            if (isAnimating) {
+                isAnimating = false;
+                clearInterval(animationInterval);
+                
+                // 重置灯光为灰色
+                document.querySelectorAll('.lamp').forEach(lamp => {
+                    lamp.style.color = '#e0e0e0';
+                    lamp.style.opacity = '1';
+                });
+            }
+        }
+        
+        document.getElementById('startBtn').addEventListener('click', startAnimation);
+        document.getElementById('stopBtn').addEventListener('click', stopAnimation);
+        
+        // 初始状态
+        stopAnimation();
+    </script>
+</body>
+</html>
